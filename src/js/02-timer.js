@@ -32,6 +32,28 @@ const options = {
 
 const inputForUser = flatpickr(inputRef, options);
 
+
+function onStart() {
+btnStartRef.setAttribute("disabled", "true");
+   const timerId = setInterval(() => {
+        const currentTime = Date.now();
+        const differenceTime = startTim - currentTime;
+        const time = convertMs(differenceTime);
+        updateTimer(time);
+        if (differenceTime <= 1000) {
+           clearInterval(timerId);
+            Notiflix.Report.success(
+                'Finish',
+                'Congratulations!!!',
+                'Close',
+            {
+                width: '360px',
+                svgSize: '120px',
+            },);
+       }
+   }, 1000);   
+}
+
 function convertMs(ms) {
   const second = 1000;
   const minute = second * 60;
@@ -48,26 +70,6 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
-}
-
-function onStart() {
-btnStartRef.setAttribute("disabled", "true");
-   const timerId = setInterval(() => {
-        const currentTime = Date.now();
-        const differenceTime = startTim - currentTime;
-       const time = convertMs(differenceTime);
-       if (differenceTime === 0) {
-           clearInterval(timerId);
-           console.log('finish');
-       }
-       updateTimer(time);
-
-   }, 1000);
-    
-    
-    const currentTime = Date.now();
-    const differenceTime = startTim - currentTime;
-       
 }
 
 function updateTimer({ days, hours, minutes, seconds }) {
