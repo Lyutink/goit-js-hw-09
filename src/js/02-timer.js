@@ -20,12 +20,10 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-      console.log(selectedDates[0]);
       if (selectedDates[0].getTime() < this.config.defaultDate.getTime()) {
         Notiflix.Notify.failure('Please choose a date in the future');
       } else {
           btnStartRef.removeAttribute("disabled");
-          startTim = selectedDates[0].getTime();
       }
   },
 };
@@ -34,13 +32,15 @@ const inputForUser = flatpickr(inputRef, options);
 
 
 function onStart() {
-btnStartRef.setAttribute("disabled", "true");
-   const timerId = setInterval(() => {
+    btnStartRef.setAttribute("disabled", "true");
+    startTim = inputForUser.selectedDates[0].getTime();
+
+    const timerId = setInterval(() => {
         const currentTime = Date.now();
         const differenceTime = startTim - currentTime;
         const time = convertMs(differenceTime);
         updateTimer(time);
-        if (differenceTime <= 1000) {
+        if (differenceTime < 1000) {
            clearInterval(timerId);
             Notiflix.Report.success(
                 'Finish',
@@ -61,15 +61,19 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = Math.floor(ms / day);
+  const days = pad(Math.floor(ms / day));
   // Remaining hours
-  const hours = Math.floor((ms % day) / hour);
+  const hours = pad(Math.floor((ms % day) / hour));
   // Remaining minutes
-  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const minutes = pad(Math.floor(((ms % day) % hour) / minute));
   // Remaining seconds
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const seconds = pad(Math.floor((((ms % day) % hour) % minute) / second));
 
   return { days, hours, minutes, seconds };
+}
+
+function pad(value) {
+    return String(value).padStart(2, '0');
 }
 
 function updateTimer({ days, hours, minutes, seconds }) {
