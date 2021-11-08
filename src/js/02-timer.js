@@ -41,7 +41,13 @@ function onStart() {
         const time = convertMs(differenceTime);
         updateTimer(time);
         if (differenceTime < 1000) {
-           clearInterval(timerId);
+            stopTimer(timerId)
+       }
+   }, 1000);   
+}
+
+function stopTimer(timerId) {
+               clearInterval(timerId);
             Notiflix.Report.success(
                 'Finish',
                 'Congratulations!!!',
@@ -50,8 +56,6 @@ function onStart() {
                 width: '360px',
                 svgSize: '120px',
             },);
-       }
-   }, 1000);   
 }
 
 function convertMs(ms) {
